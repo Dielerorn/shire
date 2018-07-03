@@ -1,4 +1,4 @@
-# Shire
+# Shire Shell
 SHell In Ruby? Excellent!
 
 <h4>Download</h4>
