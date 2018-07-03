@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+require 'colorize'
+require 'shellwords'
+
+puts "=========================".blue
+puts " Welcome to Shire Shell!".blue
+puts "SH".green+"ell".blue+" I".green+"n".blue+" R".green+"uby?".blue+" E".green+"xcellent!".blue
+puts "=========================".blue
+
+def main
+  loop do
+    $stdout.print ENV['PROMPT']
+    line = $stdin.gets.strip
+    command, *arguments = Shellwords.shellsplit(line)
+
+    if BUILTINS[command]
+      BUILTINS[command].call(*arguments)
+    else
+      pid = fork {
+        exec line
+      }
+
+      Process.wait pid
+    end
+  end
+end
+
+BUILTINS = {
+  'cd' => lambda { |dir = ENV["HOME"]| Dir.chdir(dir) },
+  'exit' => lambda { |code = 0| exit(code.to_i) },
+  'exec' => lambda { |*command| exec *command },
+  'set' => lambda { |args|
+    key, value = args.split('=')
+    ENV[key] = value
+  }
+}
+
+ENV['PROMPT'] = '▶ '.green
+
+main
+
