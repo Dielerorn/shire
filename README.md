@@ -1,2 +1,2 @@
-# shire
+# Shire
 SHell In Ruby? Excellent!
